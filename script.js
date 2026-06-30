@@ -26,3 +26,18 @@ function saveReflection() {
   localStorage.setItem("reflection", reflection);
   alert("Saved 🤍 You showed up today.");
 }
+const brainDumpInput = document.getElementById("brainDump");
+const saveBrainDumpBtn = document.getElementById("saveBrainDump");
+const focusTaskText = document.getElementById("focusTask");
+
+saveBrainDumpBtn.addEventListener("click", () => {
+  const text = brainDumpInput.value.trim();
+
+  if (text === "") {
+    alert("Write something first 🌱");
+    return;
+  }
+
+  const firstTask = text.split("\n")[0];
+  focusTaskText.textContent = firstTask;
+});
