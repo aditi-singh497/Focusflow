@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FocusFlow</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <main class="container">
+    <h1>FocusFlow</h1>
+    <p class="subtitle">A gentle space to slow down and focus.</p>
+
+    <!-- Brain Dump -->
+    <section class="card">
+      <h2>Brain Dump</h2>
+      <p class="hint">Write everything that’s on your mind.</p>
+      <textarea id="brainDump" placeholder="Type here..."></textarea>
+      <button onclick="saveDump()">Save</button>
+    </section>
+
+    <!-- Focus Mode -->
+    <section class="card">
+      <h2>Focus Mode</h2>
+      <p class="hint">Just one small step for now.</p>
+      <div id="focusTask">No task selected yet.</div>
+    </section>
+
+    <!-- Reflection -->
+    <section class="card">
+      <h2>End-of-Day Reflection</h2>
+      <input id="reflection" placeholder="One thing you’re proud of today" />
+      <button onclick="saveReflection()">Save</button>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
