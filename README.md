@@ -1,2 +1,2 @@
 # hackhazards-project
-My submission for HackHazards 2026
+A gentle productivity companion designed to reduce mental overwhelm.
