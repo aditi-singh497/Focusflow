@@ -1,3 +1,4 @@
+console.log("FocusFlow JS connected");
 function saveDump() {
   const dumpText = document.getElementById("brainDump").value;
 
