@@ -1,21 +1,7 @@
 /* ==========================================================================
    FocusFlow — script.js
-   Vanilla JS, no frameworks. Everything is stored in localStorage so the
-   app works fully offline and requires no backend.
-
-   Sections of this file:
-     1. View navigation (button-driven, no scroll, no reload)
-     2. Brain Dump (autosave + status)
-     3. Focus Mode
-     4. AI Assist placeholder
-     5. End-of-Day Reflection (autosave draft + saved log)
-     6. Focus Timer (Pomodoro-style)
-     7. Init
    ========================================================================== */
 
-// ---------------------------------------------------------------------------
-// STORAGE KEYS
-// ---------------------------------------------------------------------------
 const STORAGE_KEYS = {
   DUMP: "focusflow_dump",
   FOCUS: "focusflow_focus",
@@ -25,28 +11,46 @@ const STORAGE_KEYS = {
 
 /* ==========================================================================
    1. VIEW NAVIGATION
+   Every screen is a `.view` element with a unique id (hero, dump, focus,
+   reflect, timer). Exactly one carries `.is-active` at a time. This is the
+   ONLY thing that controls what's visible — no scrolling, no reloads.
    ========================================================================== */
 
 const views = document.querySelectorAll(".view");
-const navButtons = document.querySelectorAll(".day-nav__item");
-const goHomeBtn = document.getElementById("goHome");
 
 function showView(targetId) {
+  const target = document.getElementById(targetId);
+  if (!target) {
+    console.warn(`FocusFlow: no view found with id "${targetId}"`);
+    return;
+  }
+
   views.forEach((view) => {
     view.classList.toggle("is-active", view.id === targetId);
   });
 
-  navButtons.forEach((button) => {
+  document.querySelectorAll(".day-nav__item").forEach((button) => {
     button.classList.toggle("is-active", button.dataset.target === targetId);
   });
 }
 
-document.querySelectorAll("[data-target]").forEach((trigger) => {
-  if (trigger.classList.contains("preset-btn")) return;
-  trigger.addEventListener("click", () => showView(trigger.dataset.target));
-});
+// Wire up every button that should trigger navigation: the four nav pills,
+// and the hero's "Start your morning" button. Both carry data-target.
+document.querySelectorAll(".day-nav__item[data-target], .hero-actions [data-target]")
+  .forEach((trigger) => {
+    trigger.addEventListener("click", (e) => {
+      e.preventDefault();
+      showView(trigger.dataset.target);
+    });
+  });
 
-goHomeBtn.addEventListener("click", () => showView("hero"));
+const goHomeBtn = document.getElementById("goHome");
+if (goHomeBtn) {
+  goHomeBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    showView("hero");
+  });
+}
 
 /* ==========================================================================
    2. BRAIN DUMP
@@ -57,13 +61,13 @@ const dumpStatus = document.getElementById("dumpStatus");
 const clearDumpBtn = document.getElementById("clearDump");
 
 let dumpSaveTimeout = null;
-let dumpStatusTimeout = null;
+let statusTimeout = null;
 
 function flashStatus(el, message) {
   el.textContent = message;
   el.classList.add("is-visible");
-  clearTimeout(dumpStatusTimeout);
-  dumpStatusTimeout = setTimeout(() => el.classList.remove("is-visible"), 1800);
+  clearTimeout(statusTimeout);
+  statusTimeout = setTimeout(() => el.classList.remove("is-visible"), 1800);
 }
 
 function loadDump() {
@@ -83,8 +87,7 @@ dumpInput.addEventListener("input", () => {
 });
 
 clearDumpBtn.addEventListener("click", () => {
-  const confirmed = confirm("Clear today's brain dump? This can't be undone.");
-  if (!confirmed) return;
+  if (!confirm("Clear today's brain dump? This can't be undone.")) return;
   dumpInput.value = "";
   saveDump();
 });
@@ -140,7 +143,7 @@ setFocusBtn.addEventListener("click", () => {
 });
 
 /* ==========================================================================
-   4. AI ASSIST ("Help me focus")
+   4. AI ASSIST
    ========================================================================== */
 
 const aiAssistBtn = document.getElementById("aiAssistBtn");
@@ -158,11 +161,6 @@ aiAssistBtn.addEventListener("click", async () => {
   aiAssistBtn.textContent = "Help me focus";
 });
 
-/**
- * getAISuggestion(focusText)
- * PLACEHOLDER AI LOGIC — replace the body with a fetch() call to a real
- * API later; the function signature (async, returns a string) stays the same.
- */
 async function getAISuggestion(focusText) {
   const genericSuggestions = [
     "Start with the smallest possible version of this. You can expand later.",
@@ -180,9 +178,7 @@ async function getAISuggestion(focusText) {
   ];
 
   const pool = focusText ? focusedSuggestions : genericSuggestions;
-
   await new Promise((resolve) => setTimeout(resolve, 600));
-
   return pool[Math.floor(Math.random() * pool.length)];
 }
 
@@ -222,8 +218,7 @@ reflectInput.addEventListener("input", () => {
 
 function loadReflections() {
   const raw = localStorage.getItem(STORAGE_KEYS.REFLECTIONS);
-  const entries = raw ? JSON.parse(raw) : [];
-  renderReflectionLog(entries);
+  renderReflectionLog(raw ? JSON.parse(raw) : []);
 }
 
 function renderReflectionLog(entries) {
@@ -237,21 +232,18 @@ function renderReflectionLog(entries) {
     return;
   }
 
-  entries
-    .slice()
-    .reverse()
-    .forEach((entry) => {
-      const li = document.createElement("li");
-      const date = document.createElement("span");
-      date.className = "log-date";
-      date.textContent = `${entry.date} — ${entry.prompt}`;
-      const text = document.createElement("p");
-      text.textContent = entry.text;
-      text.style.margin = "0";
-      li.appendChild(date);
-      li.appendChild(text);
-      reflectionLog.appendChild(li);
-    });
+  entries.slice().reverse().forEach((entry) => {
+    const li = document.createElement("li");
+    const date = document.createElement("span");
+    date.className = "log-date";
+    date.textContent = `${entry.date} — ${entry.prompt}`;
+    const text = document.createElement("p");
+    text.textContent = entry.text;
+    text.style.margin = "0";
+    li.appendChild(date);
+    li.appendChild(text);
+    reflectionLog.appendChild(li);
+  });
 }
 
 saveReflectionBtn.addEventListener("click", () => {
@@ -281,7 +273,7 @@ aiPromptBtn.addEventListener("click", () => {
 });
 
 /* ==========================================================================
-   6. FOCUS TIMER (Pomodoro-style)
+   6. FOCUS TIMER
    ========================================================================== */
 
 const presetButtons = document.querySelectorAll(".preset-btn");
@@ -303,7 +295,7 @@ const timerState = {
   breakMinutes: 10,
   totalRounds: 1,
   currentRound: 1,
-  phase: "focus", // "focus" | "break"
+  phase: "focus",
   remainingSeconds: 25 * 60,
   intervalId: null,
   isRunning: false,
@@ -398,18 +390,20 @@ presetButtons.forEach((button) => {
     }
 
     customPanel.hidden = true;
-    const focusMinutes = Number(button.dataset.focus);
-    const breakMinutes = Number(button.dataset.break);
-    const rounds = Number(button.dataset.rounds);
-    configureTimer(focusMinutes, breakMinutes, rounds);
+    configureTimer(
+      Number(button.dataset.focus),
+      Number(button.dataset.break),
+      Number(button.dataset.rounds)
+    );
   });
 });
 
 applyCustomBtn.addEventListener("click", () => {
-  const focusMinutes = Math.max(1, Number(customFocusInput.value) || 25);
-  const breakMinutes = Math.max(1, Number(customBreakInput.value) || 5);
-  const rounds = Math.max(1, Number(customRoundsInput.value) || 1);
-  configureTimer(focusMinutes, breakMinutes, rounds);
+  configureTimer(
+    Math.max(1, Number(customFocusInput.value) || 25),
+    Math.max(1, Number(customBreakInput.value) || 5),
+    Math.max(1, Number(customRoundsInput.value) || 1)
+  );
 });
 
 /* ==========================================================================
