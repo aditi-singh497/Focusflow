@@ -1,59 +1,436 @@
+/* ==========================================================================
+   FocusFlow — Design Tokens
+   Palette:  bg #FAF8F3 · panel #F1ECE2 · line #DDD5C4
+             ink #2B2A26 · muted #6E6A60 · sage #7C8B73 · clay #C79B76
+   Type:     Display  — "Fraunces" (warm serif, used with restraint)
+             Body     — "Inter"
+             Utility  — "IBM Plex Mono" (labels, timestamps, eyebrows)
+   ========================================================================== */
+
+:root {
+  --bg: #FAF8F3;
+  --panel: #F1ECE2;
+  --panel-alt: #ECE6D8;
+  --line: #DDD5C4;
+  --ink: #2B2A26;
+  --muted: #6E6A60;
+  --sage: #7C8B73;
+  --sage-dark: #5F6E57;
+  --clay: #C79B76;
+
+  --radius-sm: 6px;
+  --radius-md: 14px;
+  --radius-lg: 24px;
+
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.75rem;
+  --space-4: 3rem;
+  --space-5: 5rem;
+
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: "IBM Plex Mono", Menlo, monospace;
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f6f7f9;
-  color: #333;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
 }
 
-.container {
-  max-width: 600px;
-  margin: 40px auto;
-  padding: 20px;
+h1, h2, h3 { font-family: var(--font-display); font-weight: 500; margin: 0; }
+
+a, button { font-family: inherit; }
+
+:focus-visible {
+  outline: 2px solid var(--sage-dark);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
 }
 
-h1 {
-  text-align: center;
-  font-weight: 500;
+/* ---------------------------- Header ---------------------------- */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgba(250, 248, 243, 0.88);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
 }
 
-.subtitle {
-  text-align: center;
-  color: #666;
-  margin-bottom: 30px;
+.header-inner {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: var(--space-2) var(--space-3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-2);
 }
 
-.card {
-  background: #ffffff;
-  padding: 20px;
-  border-radius: 12px;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+.wordmark {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.25rem;
+  letter-spacing: 0.01em;
 }
 
-textarea, input {
-  width: 100%;
-  padding: 10px;
-  margin-top: 10px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  font-size: 14px;
+.day-nav {
+  display: flex;
+  gap: 0.25rem;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 4px;
 }
 
-button {
-  margin-top: 12px;
-  padding: 10px 16px;
+.day-nav__item {
   border: none;
-  border-radius: 8px;
-  background: #6c8cff;
-  color: white;
+  background: transparent;
+  color: var(--muted);
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-family: var(--font-mono);
   cursor: pointer;
+  transition: background 0.2s var(--ease), color 0.2s var(--ease);
 }
 
-button:hover {
-  opacity: 0.9;
+.day-nav__item:hover { color: var(--ink); }
+
+.day-nav__item.is-active {
+  background: var(--ink);
+  color: var(--bg);
 }
 
-.hint {
-  font-size: 13px;
-  color: #777;
+/* ---------------------------- Hero ---------------------------- */
+
+.hero {
+  position: relative;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: var(--space-5) var(--space-3) var(--space-4);
+  overflow: hidden;
+}
+
+.hero-inner { max-width: 640px; position: relative; z-index: 1; }
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--sage-dark);
+  margin: 0 0 var(--space-2);
+}
+
+.hero-title {
+  font-size: clamp(2.1rem, 4.5vw, 3.1rem);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.hero-title em {
+  font-style: italic;
+  color: var(--sage-dark);
+}
+
+.hero-sub {
+  margin-top: var(--space-2);
+  color: var(--muted);
+  font-size: 1.05rem;
+  max-width: 46ch;
+}
+
+/* Signature element: a slow, breathing gradient orb — the visual heartbeat
+   of the product. Purely ambient; respects reduced-motion above. */
+.hero-orb {
+  position: absolute;
+  top: -80px;
+  right: -120px;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 40%, #DCE3D2 0%, #EADFC9 45%, transparent 72%);
+  filter: blur(6px);
+  animation: breathe 9s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.06); opacity: 1; }
+}
+
+/* ---------------------------- Panels ---------------------------- */
+
+.panel {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: var(--space-4) var(--space-3);
+  scroll-margin-top: 90px;
+}
+
+.panel-inner {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+}
+
+.panel-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--sage-dark);
+  margin: 0 0 0.5rem;
+}
+
+.panel-title {
+  font-size: 1.9rem;
+  margin-bottom: 0.6rem;
+}
+
+.panel-hint {
+  color: var(--muted);
+  max-width: 60ch;
+  margin-bottom: var(--space-3);
+}
+
+/* ---------------------------- Brain dump ---------------------------- */
+
+.dump-area {
+  width: 100%;
+  min-height: 260px;
+  resize: vertical;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  font-family: var(--font-body);
+  font-size: 1.02rem;
+  line-height: 1.8;
+  color: var(--ink);
+  transition: border-color 0.2s var(--ease);
+}
+
+.dump-area:focus { border-color: var(--sage); }
+
+.dump-area::placeholder { color: #A9A392; }
+
+.panel-actions {
+  margin-top: var(--space-2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.save-status {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+/* ---------------------------- Buttons ---------------------------- */
+
+.btn {
+  border-radius: 999px;
+  border: 1px solid transparent;
+  padding: 0.65rem 1.3rem;
+  font-size: 0.92rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: transform 0.15s var(--ease), background 0.2s var(--ease), border-color 0.2s var(--ease);
+}
+
+.btn:active { transform: scale(0.97); }
+
+.btn--primary {
+  background: var(--ink);
+  color: var(--bg);
+}
+
+.btn--primary:hover { background: var(--sage-dark); }
+
+.btn--ghost {
+  background: transparent;
+  border-color: var(--line);
+  color: var(--muted);
+}
+
+.btn--ghost:hover { border-color: var(--muted); color: var(--ink); }
+
+.btn--soft {
+  background: var(--panel-alt);
+  border-color: var(--line);
+  color: var(--sage-dark);
+}
+
+.btn--soft:hover { background: #E4DCC7; }
+
+/* ---------------------------- Focus mode ---------------------------- */
+
+.focus-picker {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-3);
+}
+
+.focus-select {
+  flex: 1;
+  min-width: 220px;
+  padding: 0.65rem 1rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 0.95rem;
+}
+
+.focus-display {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  text-align: center;
+  margin-bottom: var(--space-3);
+}
+
+.focus-label {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+
+.focus-item {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  margin-top: var(--space-1);
+  color: var(--ink);
+}
+
+.ai-assist { text-align: center; }
+
+.ai-response {
+  margin-top: var(--space-2);
+  font-style: italic;
+  color: var(--sage-dark);
+  max-width: 52ch;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ---------------------------- Reflection ---------------------------- */
+
+.reflection-prompt {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-style: italic;
+  color: var(--sage-dark);
+  margin-bottom: var(--space-2);
+}
+
+.reflect-area {
+  width: 100%;
+  min-height: 140px;
+  resize: vertical;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--ink);
+}
+
+.reflect-area:focus { border-color: var(--sage); }
+
+.reflection-log {
+  margin-top: var(--space-4);
+  border-top: 1px solid var(--line);
+  padding-top: var(--space-3);
+}
+
+.log-title {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin-bottom: var(--space-2);
+}
+
+.log-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.log-list li {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2);
+}
+
+.log-date {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-bottom: 0.25rem;
+}
+
+.log-empty {
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* ---------------------------- Footer ---------------------------- */
+
+.site-footer {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: var(--space-4) var(--space-3) var(--space-5);
+  color: var(--muted);
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+/* ---------------------------- Responsive ---------------------------- */
+
+@media (max-width: 640px) {
+  .panel-inner { padding: var(--space-3); }
+  .hero { padding: var(--space-4) var(--space-2); }
+  .hero-orb { width: 280px; height: 280px; top: -60px; right: -100px; }
+  .focus-picker { flex-direction: column; }
+  .day-nav__item { padding: 0.35rem 0.7rem; font-size: 0.78rem; }
 }
