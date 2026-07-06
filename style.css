@@ -1,176 +1,338 @@
-/* =====================
-   Base
-   ===================== */
+/* ==========================================================================
+   FocusFlow — Design Tokens
+   Palette:  bg #FAF8F3 · panel #F1ECE2 · line #DDD5C4
+             ink #2B2A26 · muted #6E6A60 · sage #7C8B73 · clay #C79B76
+   Type:     Display  — "Fraunces" (warm serif, used with restraint)
+             Body     — "Inter"
+             Utility  — "IBM Plex Mono" (labels, timestamps, eyebrows)
+   ========================================================================== */
 
 :root {
-  --bg: #fafafa;
-  --text: #1f2933;
-  --muted: #6b7280;
-  --accent: #6366f1;
-  --card: #ffffff;
-  --radius: 14px;
-  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --bg: #FAF8F3;
+  --panel: #F1ECE2;
+  --panel-alt: #ECE6D8;
+  --line: #DDD5C4;
+  --ink: #2B2A26;
+  --muted: #6E6A60;
+  --sage: #7C8B73;
+  --sage-dark: #5F6E57;
+  --clay: #C79B76;
+
+  --radius-sm: 6px;
+  --radius-md: 14px;
+  --radius-lg: 24px;
+
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.75rem;
+  --space-4: 3rem;
+  --space-5: 5rem;
+
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: "IBM Plex Mono", Menlo, monospace;
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --header-h: 68px;
+  --footer-h: 40px;
 }
 
-* {
-  box-sizing: border-box;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+  /* Scrolling between sections is intentionally disabled — navigation
+     happens only through the Morning / Midday / Evening / Focus Timer
+     buttons, never by scrolling past a section. */
+  overflow: hidden;
 }
 
 body {
-  margin: 0;
   background: var(--bg);
-  color: var(--text);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* =====================
-   Hero
-   ===================== */
+h1, h2, h3 { font-family: var(--font-display); font-weight: 500; margin: 0; }
 
-.hero {
-  min-height: 100vh;
-  padding: 3rem 1.5rem;
-  text-align: center;
+a, button, input { font-family: inherit; }
+
+:focus-visible {
+  outline: 2px solid var(--sage-dark);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+/* ---------------------------- App shell ---------------------------- */
+
+.app-shell {
+  height: 100vh;
+  height: 100dvh; /* modern viewport unit, falls back gracefully above */
   display: flex;
   flex-direction: column;
-  justify-content: center;
 }
 
-.hero h1 {
-  font-size: 3rem;
-  margin-bottom: 0.5rem;
+/* ---------------------------- Header ---------------------------- */
+
+.site-header {
+  flex: 0 0 auto;
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  background: rgba(250, 248, 243, 0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+  z-index: 20;
 }
 
-.tagline {
-  color: var(--muted);
-  margin-bottom: 2rem;
+.header-inner {
+  width: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 var(--space-3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-2);
 }
 
-/* =====================
-   Navigation
-   ===================== */
+.wordmark {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.2rem;
+  letter-spacing: 0.01em;
+  background: none;
+  border: none;
+  color: var(--ink);
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s var(--ease);
+}
+
+.wordmark:hover { color: var(--sage-dark); }
 
 .day-nav {
   display: flex;
-  justify-content: center;
-  gap: 1rem;
-}
-
-.day-btn {
-  background: none;
-  border: 1px solid var(--accent);
-  color: var(--accent);
-  padding: 0.6rem 1.2rem;
+  gap: 0.25rem;
+  background: var(--panel);
+  border: 1px solid var(--line);
   border-radius: 999px;
+  padding: 4px;
+}
+
+.day-nav__item {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-family: var(--font-mono);
   cursor: pointer;
-  transition: all 0.3s var(--ease);
+  transition: background 0.2s var(--ease), color 0.2s var(--ease), transform 0.15s var(--ease);
 }
 
-.day-btn.is-active,
-.day-btn:hover {
-  background: var(--accent);
-  color: white;
+.day-nav__item:hover { color: var(--ink); }
+.day-nav__item:active { transform: scale(0.95); }
+
+.day-nav__item.is-active {
+  background: var(--ink);
+  color: var(--bg);
 }
 
-/* =====================
-   Panels
-   ===================== */
+/* ---------------------------- Main / views ---------------------------- */
 
-.panels-container {
+.app-main {
+  flex: 1 1 auto;
   position: relative;
-  min-height: 100vh;
+  overflow: hidden; /* no page scroll — each view manages its own overflow */
 }
 
-.panel {
+/* Every view fills the remaining viewport exactly. Only one is interactive
+   or visible at a time; switching is handled purely by toggling .is-active
+   from script.js, never by scrolling or reloading the page. */
+.view {
   position: absolute;
   inset: 0;
-  padding: 3rem 1.5rem;
-  max-width: 720px;
-  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4) var(--space-3);
+  overflow-y: auto; /* allows a tall view to scroll internally on small screens */
+
   opacity: 0;
+  transform: translateY(18px);
   pointer-events: none;
-  transform: translateY(24px);
-  transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
+  z-index: 1;
+  transition: opacity 0.55s var(--ease), transform 0.55s var(--ease);
 }
 
-.panel.is-active {
+.view.is-active {
   opacity: 1;
-  pointer-events: auto;
   transform: translateY(0);
+  pointer-events: auto;
+  z-index: 2;
 }
 
-.panel h2 {
-  margin-bottom: 0.25rem;
-}
-
-.section-sub {
-  color: var(--muted);
-  margin-bottom: 1.5rem;
-}
-
-/* =====================
-   Inputs
-   ===================== */
-
-textarea,
-select {
+.panel-inner {
   width: 100%;
-  padding: 1rem;
-  border-radius: var(--radius);
-  border: 1px solid #e5e7eb;
-  font-size: 1rem;
-  margin-bottom: 1rem;
-  resize: vertical;
+  max-width: 720px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  margin: auto;
 }
 
-textarea {
-  min-height: 140px;
+.panel-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--sage-dark);
+  margin: 0 0 0.5rem;
 }
+
+.panel-title {
+  font-size: 1.9rem;
+  margin-bottom: 0.6rem;
+}
+
+.panel-hint {
+  color: var(--muted);
+  max-width: 60ch;
+  margin-bottom: var(--space-3);
+}
+
+/* ---------------------------- Hero (landing view) ---------------------------- */
+
+.view--hero { padding: var(--space-3); }
+
+.hero {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  margin: auto;
+  padding: var(--space-3);
+  overflow: visible;
+}
+
+.hero-inner { max-width: 640px; position: relative; z-index: 1; margin: 0 auto; text-align: left; }
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--sage-dark);
+  margin: 0 0 var(--space-2);
+}
+
+.hero-title {
+  font-size: clamp(2rem, 4.5vw, 3rem);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.hero-title em {
+  font-style: italic;
+  color: var(--sage-dark);
+}
+
+.hero-sub {
+  margin-top: var(--space-2);
+  color: var(--muted);
+  font-size: 1.05rem;
+  max-width: 46ch;
+}
+
+.hero-actions { margin-top: var(--space-3); }
+
+/* Signature element: a slow, breathing gradient orb — the visual heartbeat
+   of the product. Purely ambient; respects reduced-motion above. */
+.hero-orb {
+  position: absolute;
+  top: -60px;
+  right: -80px;
+  width: 380px;
+  height: 380px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 40%, #DCE3D2 0%, #EADFC9 45%, transparent 72%);
+  filter: blur(6px);
+  z-index: 0;
+  animation: breathe 9s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.06); opacity: 1; }
+}
+
+/* ---------------------------- Brain dump ---------------------------- */
+
+.dump-area {
+  width: 100%;
+  min-height: 240px;
+  resize: vertical;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  font-family: var(--font-body);
+  font-size: 1.02rem;
+  line-height: 1.8;
+  color: var(--ink);
+  transition: border-color 0.25s var(--ease), box-shadow 0.25s var(--ease);
+}
+
+.dump-area:focus,
+.reflect-area:focus {
+  border-color: var(--sage);
+  box-shadow: 0 0 0 4px rgba(124, 139, 115, 0.14);
+}
+
+.dump-area::placeholder,
+.reflect-area::placeholder { color: #A9A392; }
+
+.panel-actions {
+  margin-top: var(--space-2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.panel-actions__buttons { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+
+.save-status {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--sage-dark);
+  opacity: 0;
+  transition: opacity 0.4s var(--ease);
+}
+
+.save-status.is-visible { opacity: 1; }
+
+/* ---------------------------- Buttons ---------------------------- */
 
 .btn {
-  background: var(--accent);
-  color: white;
-  border: none;
-  padding: 0.7rem 1.5rem;
   border-radius: 999px;
-  cursor: pointer;
-  transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
-}
-
-.btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(99,102,241,0.2);
-}
-
-/* =====================
-   Focus & Reflections
-   ===================== */
-
-.focus-display {
-  margin-top: 1.5rem;
+  border: 1px solid transparent;
+  padding: 0.65rem 1.3rem;
+  font-size: 0.92rem;
   font-weight: 500;
-  animation: fadeIn 0.5s var(--ease);
-}
-
-.reflection-list {
-  margin-top: 1.5rem;
-}
-
-.reflection-list div {
-  background: var(--card);
-  padding: 1rem;
-  border-radius: var(--radius);
-  margin-bottom: 0.75rem;
-  animation: fadeIn 0.5s var(--ease);
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+  cursor:
