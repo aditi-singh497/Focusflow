@@ -2,128 +2,60 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FocusFlow — A calmer way to think</title>
-  <meta name="description" content="FocusFlow is a quiet space for brain dumps, single-task focus, and end-of-day reflection." />
-
-  <!-- Typography: Fraunces (display), Inter (body), IBM Plex Mono (utility/labels) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FocusFlow — Gentle Productivity</title>
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
 
-  <!-- ============ HEADER ============ -->
-  <header class="site-header">
-    <div class="header-inner">
-      <span class="wordmark">FocusFlow</span>
-      <nav class="day-nav" aria-label="Parts of your day">
-        <button class="day-nav__item is-active" data-target="dump">Morning</button>
-        <button class="day-nav__item" data-target="focus">Midday</button>
-        <button class="day-nav__item" data-target="reflect">Evening</button>
-      </nav>
-    </div>
+  <!-- ================= HERO ================= -->
+  <header class="hero">
+    <h1>FocusFlow</h1>
+    <p class="tagline">A calm space to think, focus, and reflect.</p>
+
+    <nav class="day-nav">
+      <button class="day-btn" data-target="dump">Morning</button>
+      <button class="day-btn" data-target="focus">Midday</button>
+      <button class="day-btn" data-target="reflect">Evening</button>
+    </nav>
   </header>
 
-  <main>
+  <!-- ================= PANELS ================= -->
+  <div class="panels-container">
 
-    <!-- ============ HERO ============ -->
-    <section class="hero">
-      <div class="hero-inner">
-        <p class="eyebrow">A quiet daily practice</p>
-        <h1 class="hero-title">Some days need less doing<br /><em>and more noticing.</em></h1>
-        <p class="hero-sub">
-          Empty your head onto the page, choose the one thing worth your attention right now,
-          and close the day with a single honest sentence. Nothing here is timed, scored, or shared.
-        </p>
-      </div>
-      <div class="hero-orb" aria-hidden="true"></div>
+    <!-- ===== Morning ===== -->
+    <section class="panel is-active" id="dump">
+      <h2>Morning Brain Dump</h2>
+      <p class="section-sub">Unload thoughts. No structure required.</p>
+
+      <textarea id="dumpInput" placeholder="Write freely..."></textarea>
+      <button class="btn" id="saveDump">Save</button>
     </section>
 
-    <!-- ============ BRAIN DUMP ============ -->
-    <section class="panel" id="dump">
-      <div class="panel-inner">
-        <p class="panel-eyebrow">Morning — clear your head</p>
-        <h2 class="panel-title">Brain Dump</h2>
-        <p class="panel-hint">Write down everything that's taking up space. One thought per line. No order needed.</p>
+    <!-- ===== Midday ===== -->
+    <section class="panel" id="focus">
+      <h2>Midday Focus</h2>
+      <p class="section-sub">Choose one thing that matters today.</p>
 
-        <textarea
-          id="dumpInput"
-          class="dump-area"
-          placeholder="What's on your mind today?
+      <select id="focusSelect"></select>
+      <button class="btn" id="setFocus">Set Focus</button>
 
-Try one thought per line — a task, a worry, an idea. You can shape it into focus later."
-          aria-label="Brain dump text area"
-        ></textarea>
-
-        <div class="panel-actions">
-          <span class="save-status" id="dumpStatus">Saved automatically</span>
-          <button class="btn btn--ghost" id="clearDump">Clear</button>
-        </div>
-      </div>
+      <div class="focus-display" id="focusDisplay"></div>
     </section>
 
-    <!-- ============ FOCUS MODE ============ -->
-    <section class="panel panel--focus" id="focus">
-      <div class="panel-inner">
-        <p class="panel-eyebrow">Midday — choose one thing</p>
-        <h2 class="panel-title">Focus Mode</h2>
-        <p class="panel-hint">Pick a single line from your brain dump. Just this. Everything else can wait.</p>
+    <!-- ===== Evening ===== -->
+    <section class="panel" id="reflect">
+      <h2>Evening Reflection</h2>
+      <p class="section-sub">Close the day gently.</p>
 
-        <div class="focus-picker">
-          <select id="focusSelect" class="focus-select" aria-label="Choose a line from your brain dump">
-            <option value="">Choose from today's brain dump…</option>
-          </select>
-          <button class="btn btn--primary" id="setFocus">Make this my focus</button>
-        </div>
+      <textarea id="reflectionInput" placeholder="What went well?"></textarea>
+      <button class="btn" id="saveReflection">Save Reflection</button>
 
-        <div class="focus-display" id="focusDisplay">
-          <span class="focus-label">Your one focus</span>
-          <p class="focus-item" id="focusItem">Nothing chosen yet — and that's alright.</p>
-        </div>
-
-        <div class="ai-assist">
-          <button class="btn btn--soft" id="aiAssistBtn">Help me focus</button>
-          <p class="ai-response" id="aiResponse" hidden></p>
-        </div>
-      </div>
+      <div class="reflection-list" id="reflectionList"></div>
     </section>
 
-    <!-- ============ END OF DAY REFLECTION ============ -->
-    <section class="panel panel--reflect" id="reflect">
-      <div class="panel-inner">
-        <p class="panel-eyebrow">Evening — close the day gently</p>
-        <h2 class="panel-title">End-of-Day Reflection</h2>
-        <p class="reflection-prompt" id="reflectionPrompt">What's one thing that felt true today?</p>
-
-        <textarea
-          id="reflectInput"
-          class="reflect-area"
-          placeholder="A few honest sentences are enough."
-          aria-label="Evening reflection text area"
-        ></textarea>
-
-        <div class="panel-actions">
-          <button class="btn btn--soft" id="aiPromptBtn">Suggest a gentler prompt</button>
-          <button class="btn btn--primary" id="saveReflection">Save reflection</button>
-        </div>
-
-        <div class="reflection-log">
-          <h3 class="log-title">Past reflections</h3>
-          <ul class="log-list" id="reflectionLog">
-            <!-- Populated by script.js -->
-          </ul>
-        </div>
-      </div>
-    </section>
-
-  </main>
-
-  <footer class="site-footer">
-    <p>FocusFlow keeps everything on your device. Nothing you write here is sent anywhere unless you connect an AI key.</p>
-  </footer>
+  </div>
 
   <script src="script.js"></script>
 </body>
