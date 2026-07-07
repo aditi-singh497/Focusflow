@@ -336,3 +336,93 @@ a, button, input { font-family: inherit; }
   font-size: 0.92rem;
   font-weight: 500;
   cursor:
+/* ---------------------------- Timer: two-mode switching ---------------------------- */
+
+#timerCard {
+  position: relative;
+  overflow: hidden;
+  transition: background 0.6s ease;
+}
+
+#setupMode,
+#runningMode {
+  transition: opacity 0.4s var(--ease), transform 0.4s var(--ease);
+}
+
+/* A hidden mode fades + shrinks slightly and is lifted out of layout flow
+   so the visible mode's height drives the card, and switching crossfades
+   instead of jumping. */
+#setupMode.is-hidden,
+#runningMode.is-hidden {
+  opacity: 0;
+  transform: scale(0.96);
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+}
+
+/* ---------------------------- Timer: progress ring ---------------------------- */
+
+.timer-ring-wrap {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  margin: 0 auto var(--space-3);
+}
+
+.timer-ring {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg); /* so progress starts at 12 o'clock */
+}
+
+.timer-ring__track {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 8;
+}
+
+.timer-ring__progress {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 8;
+  stroke-linecap: round;
+  /* stroke-dasharray is set once from JS (2πr); dashoffset animates each tick */
+  transition: stroke-dashoffset 1s linear, stroke 0.6s ease;
+}
+
+.timer-clock {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 8vw, 3.2rem);
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  transition: color 0.6s ease;
+}
+
+#roundInfo {
+  display: block;
+  margin-bottom: var(--space-2);
+}
+
+/* ---------------------------- Timer: break-mode palette ---------------------------- */
+
+#timerCard.is-break {
+  background: #E9EEE5; /* softer, cooler tone than the standard panel bg */
+}
+
+#timerCard.is-break .timer-clock {
+  color: var(--sage-dark);
+}
+
+#timerCard.is-break .timer-ring__progress {
+  stroke: var(--sage);
+}
+
+#timerCard.is-break .timer-round {
+  color: var(--sage-dark);
+}
