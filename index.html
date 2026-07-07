@@ -176,13 +176,27 @@ Try one thought per line — a task, a worry, an idea. You can shape it into foc
     <div id="runningMode" class="is-hidden">
       <span class="timer-round" id="roundInfo">Focus — Round 1 of 1</span>
 
-      <div class="timer-ring-wrap">
-        <svg class="timer-ring" viewBox="0 0 220 220" aria-hidden="true">
-          <circle class="timer-ring__track" cx="110" cy="110" r="100" />
-          <circle class="timer-ring__progress" id="timerRingProgress" cx="110" cy="110" r="100" />
-        </svg>
-        <span class="timer-clock" id="bigTimer">25:00</span>
-      </div>
+    <div class="timer-ring-wrap">
+  <svg class="timer-ring" viewBox="0 0 220 220" aria-hidden="true">
+    <circle
+      class="timer-ring__track"
+      cx="110" cy="110" r="100"
+      fill="none"
+      stroke="#DDD5C4"
+      stroke-width="8"
+    />
+    <circle
+      class="timer-ring__progress"
+      id="timerRingProgress"
+      cx="110" cy="110" r="100"
+      fill="none"
+      stroke="#2B2A26"
+      stroke-width="8"
+      stroke-linecap="round"
+    />
+  </svg>
+  <span class="timer-clock" id="bigTimer">25:00</span>
+</div>
 
       <div class="timer-controls">
         <button class="btn btn--primary" id="timerStart">Start</button>
