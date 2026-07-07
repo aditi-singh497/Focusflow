@@ -138,47 +138,61 @@ Try one thought per line — a task, a worry, an idea. You can shape it into foc
       </section>
 
       <!-- ============ FOCUS TIMER ============ -->
-      <section class="view" id="timer" aria-label="Focus timer">
-        <div class="panel-inner panel-inner--timer">
-          <p class="panel-eyebrow">Anytime — hold a single stretch of attention</p>
-          <h2 class="panel-title">Focus Timer</h2>
-          <p class="panel-hint">Choose a rhythm, or set your own. Work while it counts down, rest when it tells you to.</p>
+<section class="view" id="timer" aria-label="Focus timer">
+  <div class="panel-inner panel-inner--timer" id="timerCard">
 
-          <div class="timer-presets" role="group" aria-label="Timer presets">
-            <button class="preset-btn is-active" data-focus="25" data-break="10" data-rounds="1">25 / 10</button>
-            <button class="preset-btn" data-focus="50" data-break="10" data-rounds="1">50 / 10</button>
-            <button class="preset-btn" data-custom="true">Custom</button>
-          </div>
+    <!-- ============ SETUP MODE — visible before the timer starts ============ -->
+    <div id="setupMode">
+      <p class="panel-eyebrow">Anytime — hold a single stretch of attention</p>
+      <h2 class="panel-title">Focus Timer</h2>
+      <p class="panel-hint">Choose a rhythm, or set your own. Work while it counts down, rest when it tells you to.</p>
 
-          <div class="timer-custom" id="timerCustom" hidden>
-            <label class="custom-field">
-              <span>Focus (min)</span>
-              <input type="number" id="customFocus" min="1" max="180" value="25" />
-            </label>
-            <label class="custom-field">
-              <span>Break (min)</span>
-              <input type="number" id="customBreak" min="1" max="60" value="5" />
-            </label>
-            <label class="custom-field">
-              <span>Rounds</span>
-              <input type="number" id="customRounds" min="1" max="12" value="4" />
-            </label>
-            <button class="btn btn--ghost" id="applyCustom">Apply</button>
-          </div>
+      <div class="timer-presets" role="group" aria-label="Timer presets">
+        <button class="preset-btn is-active" data-focus="25" data-break="10" data-rounds="1">25 / 10</button>
+        <button class="preset-btn" data-focus="50" data-break="10" data-rounds="1">50 / 10</button>
+        <button class="preset-btn" data-custom="true">Custom</button>
+      </div>
 
-          <div class="timer-display">
-            <span class="timer-phase" id="timerPhase">Focus</span>
-            <span class="timer-clock" id="timerClock">25:00</span>
-            <span class="timer-round" id="timerRound">Round 1 of 1</span>
-          </div>
+      <div class="timer-custom" id="timerCustom" hidden>
+        <label class="custom-field">
+          <span>Focus (min)</span>
+          <input type="number" id="customFocus" min="1" max="180" value="25" />
+        </label>
+        <label class="custom-field">
+          <span>Break (min)</span>
+          <input type="number" id="customBreak" min="1" max="60" value="5" />
+        </label>
+        <label class="custom-field">
+          <span>Rounds</span>
+          <input type="number" id="customRounds" min="1" max="12" value="4" />
+        </label>
+        <button class="btn btn--ghost" id="applyCustom">Apply</button>
+      </div>
 
-          <div class="timer-controls">
-            <button class="btn btn--primary" id="timerStart">Start</button>
-            <button class="btn btn--soft" id="timerPause" disabled>Pause</button>
-            <button class="btn btn--ghost" id="timerReset">Reset</button>
-          </div>
-        </div>
-      </section>
+      <button class="btn btn--primary" id="beginTimerBtn">Begin focus session</button>
+    </div>
+
+    <!-- ============ RUNNING MODE — visible while the timer is active ============ -->
+    <div id="runningMode" class="is-hidden">
+      <span class="timer-round" id="roundInfo">Focus — Round 1 of 1</span>
+
+      <div class="timer-ring-wrap">
+        <svg class="timer-ring" viewBox="0 0 220 220" aria-hidden="true">
+          <circle class="timer-ring__track" cx="110" cy="110" r="100" />
+          <circle class="timer-ring__progress" id="timerRingProgress" cx="110" cy="110" r="100" />
+        </svg>
+        <span class="timer-clock" id="bigTimer">25:00</span>
+      </div>
+
+      <div class="timer-controls">
+        <button class="btn btn--primary" id="timerStart">Start</button>
+        <button class="btn btn--soft" id="timerPause" disabled>Pause</button>
+        <button class="btn btn--ghost" id="timerReset">Reset</button>
+      </div>
+    </div>
+
+  </div>
+</section>
 
     </main>
 
