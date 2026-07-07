@@ -272,9 +272,17 @@ aiPromptBtn.addEventListener("click", () => {
   reflectionPrompt.textContent = next;
 });
 
-/* ==========================================================================
-   6. FOCUS TIMER
+   /* ==========================================================================
+   6. FOCUS TIMER (Pomodoro-style)
+   Two UI modes: #setupMode (choose a rhythm) and #runningMode (immersive
+   countdown). Starting the timer crossfades into running mode; resetting
+   or finishing all rounds crossfades back to setup.
    ========================================================================== */
+
+const setupMode = document.getElementById("setupMode");
+const runningMode = document.getElementById("runningMode");
+const timerCard = document.getElementById("timerCard");
+const beginTimerBtn = document.getElementById("beginTimerBtn");
 
 const presetButtons = document.querySelectorAll(".preset-btn");
 const customPanel = document.getElementById("timerCustom");
@@ -283,19 +291,86 @@ const customBreakInput = document.getElementById("customBreak");
 const customRoundsInput = document.getElementById("customRounds");
 const applyCustomBtn = document.getElementById("applyCustom");
 
-const timerPhaseEl = document.getElementById("timerPhase");
-const timerClockEl = document.getElementById("timerClock");
-const timerRoundEl = document.getElementById("timerRound");
+const roundInfoEl = document.getElementById("roundInfo");
+const bigTimerEl = document.getElementById("bigTimer");
+const ringProgress = document.getElementById("timerRingProgress");
 const timerStartBtn = document.getElementById("timerStart");
 const timerPauseBtn = document.getElementById("timerPause");
 const timerResetBtn = document.getElementById("timerReset");
 
+// --- Progress ring setup ---------------------------------------------------
+const RING_RADIUS = 100;
+const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
+ringProgress.style.strokeDasharray = `${RING_CIRCUMFERENCE}`;
+ringProgress.style.strokeDashoffset = "0";
+
+// --- Sound effects (Web Audio API — no external files, no libraries) ------
+// ENABLE_TICK_SOUND is a simple in-code toggle: flip to false to silence
+// the subtle per-second tick while keeping the phase-change chimes.
+const ENABLE_TICK_SOUND = true;
+
+let audioCtx = null;
+function getAudioContext() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if (audioCtx.state === "suspended") audioCtx.resume();
+  return audioCtx;
+}
+
+// A very short, quiet blip — deliberately subtle so it never feels harsh.
+function playTick() {
+  if (!ENABLE_TICK_SOUND) return;
+  const ctx = getAudioContext();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = "sine";
+  osc.frequency.value = 1000;
+  gain.gain.setValueAtTime(0.02, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.05);
+  osc.connect(gain).connect(ctx.destination);
+  osc.start();
+  osc.stop(ctx.currentTime + 0.05);
+}
+
+// A soft, single-note chime for phase transitions. Different pitches for
+// "settling into a break" vs. "returning to focus" so they're distinguishable
+// without being sharp. Each chime is a one-shot, so they never overlap.
+function playChime(frequency) {
+  const ctx = getAudioContext();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = "sine";
+  osc.frequency.value = frequency;
+  gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.12, ctx.currentTime + 0.08);
+  gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 1.2);
+  osc.connect(gain).connect(ctx.destination);
+  osc.start();
+  osc.stop(ctx.currentTime + 1.2);
+}
+
+function playBreakStartChime() { playChime(392.0); }  // G4 — calmer, lower
+function playFocusStartChime() { playChime(523.25); } // C5 — slightly brighter
+
+// --- Mode switching ---------------------------------------------------------
+function enterRunningMode() {
+  setupMode.classList.add("is-hidden");
+  runningMode.classList.remove("is-hidden");
+}
+
+function exitRunningMode() {
+  runningMode.classList.add("is-hidden");
+  setupMode.classList.remove("is-hidden");
+}
+
+// --- Timer state --------------------------------------------------------
 const timerState = {
   focusMinutes: 25,
   breakMinutes: 10,
   totalRounds: 1,
   currentRound: 1,
-  phase: "focus",
+  phase: "focus", // "focus" | "break"
   remainingSeconds: 25 * 60,
   intervalId: null,
   isRunning: false,
@@ -307,10 +382,22 @@ function formatClock(totalSeconds) {
   return `${minutes}:${seconds}`;
 }
 
+function currentPhaseTotalSeconds() {
+  return (timerState.phase === "focus" ? timerState.focusMinutes : timerState.breakMinutes) * 60;
+}
+
 function renderTimer() {
-  timerPhaseEl.textContent = timerState.phase === "focus" ? "Focus" : "Break";
-  timerClockEl.textContent = formatClock(timerState.remainingSeconds);
-  timerRoundEl.textContent = `Round ${timerState.currentRound} of ${timerState.totalRounds}`;
+  const phaseLabel = timerState.phase === "focus" ? "Focus" : "Break";
+  roundInfoEl.textContent = `${phaseLabel} — Round ${timerState.currentRound} of ${timerState.totalRounds}`;
+  bigTimerEl.textContent = formatClock(timerState.remainingSeconds);
+
+  // Progress ring: full circle at the start of a phase, empties as time passes.
+  const total = currentPhaseTotalSeconds();
+  const fraction = total > 0 ? timerState.remainingSeconds / total : 0;
+  ringProgress.style.strokeDashoffset = `${RING_CIRCUMFERENCE * (1 - fraction)}`;
+
+  // Break-mode palette toggle.
+  timerCard.classList.toggle("is-break", timerState.phase === "break");
 }
 
 function configureTimer(focusMinutes, breakMinutes, totalRounds) {
@@ -327,21 +414,28 @@ function configureTimer(focusMinutes, breakMinutes, totalRounds) {
 function tick() {
   if (timerState.remainingSeconds > 0) {
     timerState.remainingSeconds -= 1;
+    playTick();
     renderTimer();
     return;
   }
 
   if (timerState.phase === "focus") {
+    // Focus stretch just ended — move into a break.
     timerState.phase = "break";
     timerState.remainingSeconds = timerState.breakMinutes * 60;
+    playBreakStartChime();
   } else if (timerState.currentRound < timerState.totalRounds) {
+    // Break just ended and more rounds remain — start the next focus round.
     timerState.currentRound += 1;
     timerState.phase = "focus";
     timerState.remainingSeconds = timerState.focusMinutes * 60;
+    playFocusStartChime();
   } else {
+    // All rounds complete — stop and return to setup.
     stopTimer();
-    timerPhaseEl.textContent = "Complete";
-    timerClockEl.textContent = "00:00";
+    roundInfoEl.textContent = "Session complete";
+    bigTimerEl.textContent = "00:00";
+    exitRunningMode();
     return;
   }
 
@@ -350,6 +444,7 @@ function tick() {
 
 function startTimer() {
   if (timerState.isRunning) return;
+  getAudioContext(); // ensure the audio context is created/resumed on a user gesture
   timerState.isRunning = true;
   timerState.intervalId = setInterval(tick, 1000);
   timerStartBtn.disabled = true;
@@ -373,7 +468,14 @@ function stopTimer() {
 
 function resetTimer() {
   configureTimer(timerState.focusMinutes, timerState.breakMinutes, timerState.totalRounds);
+  exitRunningMode();
 }
+
+// --- Wiring ---------------------------------------------------------------
+beginTimerBtn.addEventListener("click", () => {
+  enterRunningMode();
+  startTimer();
+});
 
 timerStartBtn.addEventListener("click", startTimer);
 timerPauseBtn.addEventListener("click", pauseTimer);
