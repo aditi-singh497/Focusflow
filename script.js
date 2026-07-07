@@ -391,13 +391,15 @@ function renderTimer() {
   roundInfoEl.textContent = `${phaseLabel} — Round ${timerState.currentRound} of ${timerState.totalRounds}`;
   bigTimerEl.textContent = formatClock(timerState.remainingSeconds);
 
-  // Progress ring: full circle at the start of a phase, empties as time passes.
   const total = currentPhaseTotalSeconds();
   const fraction = total > 0 ? timerState.remainingSeconds / total : 0;
   ringProgress.style.strokeDashoffset = `${RING_CIRCUMFERENCE * (1 - fraction)}`;
 
-  // Break-mode palette toggle.
-  timerCard.classList.toggle("is-break", timerState.phase === "break");
+  // Break-mode palette — set directly so it works regardless of external CSS.
+  const isBreak = timerState.phase === "break";
+  timerCard.classList.toggle("is-break", isBreak);
+  bigTimerEl.style.color = isBreak ? "#5F6E57" : "#2B2A26";
+  ringProgress.style.stroke = isBreak ? "#7C8B73" : "#2B2A26";
 }
 
 function configureTimer(focusMinutes, breakMinutes, totalRounds) {
