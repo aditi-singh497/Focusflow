@@ -201,6 +201,34 @@ Try one thought per line — a task, a worry, an idea. You can shape it into foc
 
     </main>
 
+    <!-- ============ SESSION END MODAL (fires after each focus segment, unless it's the last one) ============ -->
+<div class="modal-overlay" id="sessionEndModal" role="dialog" aria-modal="true" aria-labelledby="sessionEndTitle">
+  <div class="modal-card">
+    <p class="modal-icon">🌿</p>
+    <h3 class="modal-title" id="sessionEndTitle">Focus session complete</h3>
+    <p class="modal-text">Nice work. Take the break whenever you're ready — there's no rush.</p>
+    <div class="modal-actions">
+      <button class="btn btn--primary" id="startBreakBtn">Start Break</button>
+      <button class="btn btn--ghost" id="dismissSessionBtn">Dismiss</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ FINAL COMPLETION MODAL (fires after the last round's focus segment) ============ -->
+<div class="modal-overlay" id="finalCompletionModal" role="dialog" aria-modal="true" aria-labelledby="finalCompletionTitle">
+  <div class="modal-card">
+    <p class="modal-icon modal-icon--celebrate">🌿</p>
+    <h3 class="modal-title" id="finalCompletionTitle">Great Work Today</h3>
+    <p class="modal-text">
+      You completed <span id="completedCount">0</span> focus sessions today.
+      Thank you for taking time to focus.
+    </p>
+    <div class="modal-actions">
+      <button class="btn btn--soft" id="writeReflectionBtn">Write Reflection</button>
+      <button class="btn btn--primary" id="doneModalBtn">Done</button>
+    </div>
+  </div>
+</div>
     <footer class="site-footer">
       <p>FocusFlow keeps everything on your device. Nothing you write here is sent anywhere unless you connect an AI key.</p>
     </footer>
