@@ -69,15 +69,25 @@ Team collaboration
 Cross-device synchronization
 
 Screenshots:
+
 => Hero Page 
+
 <img width="1911" height="867" alt="image" src="https://github.com/user-attachments/assets/b3de1064-0121-4d35-930d-8877e111970d" />
+
 => Morning/Brain Dump
+
 <img width="1918" height="862" alt="image" src="https://github.com/user-attachments/assets/8e3fac44-c2c4-4dc8-957b-ae7d7756f730" />
+
 => Midday/Focus Mode
+
 <img width="1917" height="846" alt="image" src="https://github.com/user-attachments/assets/ebd6d2e7-638b-462b-9929-76f074b96d06" />
+
 => Focus Timer (All Buttons Working)
+
 <img width="1917" height="862" alt="image" src="https://github.com/user-attachments/assets/abad3f76-f9a1-4364-83bb-c5caa22181d7" />
+
 => Evening/End-of-day Reflection
+
 <img width="1917" height="866" alt="image" src="https://github.com/user-attachments/assets/a278488d-669d-4668-98fd-7e0173dd3f81" />
 
 ## 👩‍💻 Author
