@@ -60,13 +60,13 @@ https://aditi-singh497.github.io/Focusflow/
 
 Future Scope
 
-AI-powered task prioritization
-Cloud backups
-Google Calendar integration
-Mobile application
-Habit streak visualization
-Team collaboration
-Cross-device synchronization
+-AI-powered task prioritization
+-Cloud backups
+-Google Calendar integration
+-Mobile application
+-Habit streak visualization
+-Team collaboration
+-Cross-device synchronization
 
 Screenshots:
 
