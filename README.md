@@ -24,8 +24,55 @@ No privacy breach.
  📁 Project Structure
 
 FocusFlow/
-│── index.html
-│── style.css
-│── script.js
-│── screenshots/
 │── README.md
+│── index.html
+│── script.js
+│── style.css
+
+## ✨ Highlights
+✔ Fully Responsive
+✔ Local Storage Persistence
+✔ Offline First
+✔ Accessible Design
+✔ Smooth Animations
+✔ Custom Pomodoro Timer
+✔ Privacy Focused
+✔ Zero Dependencies
+
+## 🌍 Browser Support
+✅ Chrome
+✅ Edge
+✅ Firefox
+✅ Brave
+✅ Opera
+
+## ⚙️ Running Locally
+
+git clone https://github.com/aditi-singh497/Focusflow.git
+Open the project folder.
+Double-click index.html
+
+or
+
+Open index.html using Live Server in VS Code.
+Or simply visit the deployed website:
+https://aditi-singh497.github.io/Focusflow/
+
+Future Scope
+
+AI-powered task prioritization
+Cloud backups
+Google Calendar integration
+Mobile application
+Habit streak visualization
+Team collaboration
+Cross-device synchronization
+
+## 👩‍💻 Author
+
+**Aditi Singh**
+
+Built as a solo project for **HackHazards '26**.
+
+🌐 **Live Demo:** [FocusFlow](https://aditi-singh497.github.io/Focusflow/)
+📂 **GitHub Repository:** [Repository](https://github.com/aditi-singh497/Focusflow)
